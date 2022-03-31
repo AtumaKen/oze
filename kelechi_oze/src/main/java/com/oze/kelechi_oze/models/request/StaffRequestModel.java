@@ -15,9 +15,9 @@ import javax.validation.constraints.Pattern;
 public class StaffRequestModel {
 
     @NotBlank(message = "First name is required")
-    @Pattern(regexp = "^[a-zA-Z-'][ ]*$", message = "Enter valid first name")
+    @Pattern(regexp = "([a-zA-Z]{3,30}\\s*)+", message = "Enter valid first name")
     private String firstName;
-    @Pattern(regexp = "^[a-zA-Z-'][ ]*$", message = "Enter valid last name")
+    @Pattern(regexp = "([a-zA-Z]{3,30}\\s*)+", message = "Enter valid last name")
     @NotBlank(message = "Last name is required")
     private String lastName;
 
