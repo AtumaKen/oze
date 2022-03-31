@@ -1,5 +1,6 @@
 package com.oze.kelechi_oze.services;
 
+import com.oze.kelechi_oze.exception.NotFoundException;
 import com.oze.kelechi_oze.io.entities.Staff;
 import com.oze.kelechi_oze.io.repositories.StaffRepository;
 import com.oze.kelechi_oze.models.request.PatientRequestModel;
@@ -27,6 +28,16 @@ public class StaffService {
         return repository.save(staff);
     }
 
-//    public Staff up
+    public Staff updateStaff(Long id, UUID uuid, StaffRequestModel request){
+        Boolean exists = repository.existsByUuid(uuid);
+        if(!exists)
+            throw new NotFoundException("404", " Staff with UUID, "+ uuid +" not found");
+
+        Staff updateStaff = repository.findById(id).orElseThrow(() -> new NotFoundException("404", "Staff with requested Id not found"));
+
+        mapper.map(request, updateStaff);
+        updateStaff.setUuid(uuid);
+        return repository.save(updateStaff);
+    }
 
 }
