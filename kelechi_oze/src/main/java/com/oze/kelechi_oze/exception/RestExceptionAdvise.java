@@ -1,6 +1,7 @@
 package com.oze.kelechi_oze.exception;
 
 import com.oze.kelechi_oze.models.response.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class RestExceptionAdvise {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -35,6 +37,24 @@ public class RestExceptionAdvise {
 
 
         return Response.builder().code(ex.getCode()).message(ex.getMessage()).build();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CSVException.class)
+    public Response handleCSVException(
+            CSVException ex) {
+
+
+        return Response.builder().code(ex.getCode()).message(ex.getMessage()).build();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(Exception.class)
+    public Response handleGeneralExceptions(
+            Exception ex) {
+
+        log.error(ex.getMessage());
+        return Response.builder().code("99").message(ex.getMessage()).build();
     }
 
     //MissingServletRequestParameterException
