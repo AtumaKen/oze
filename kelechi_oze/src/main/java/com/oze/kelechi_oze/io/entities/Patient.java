@@ -4,32 +4,27 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-@Table(name = "STAFF")
-public class Staff {
+@Entity
+public class Patient {
 
     @Id
     @GeneratedValue
     private Long id;
-    @Type(type="uuid-char")
-    private UUID uuid;
     @Column(name = "FIRSTNAME")
     private String firstName;
     @Column(name = "LASTNAME")
     private String lastName;
-    @CreationTimestamp
-    @Column(name = "REGISTRATIONDATE")
-    private Date registrationDate;
+    @Column(name = "AGE")
+    private int age;
+    @Column(name = "LASTVISIT")
+    private Date lastVisit;
 
 }

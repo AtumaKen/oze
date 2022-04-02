@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,7 +25,7 @@ public class StaffController {
         Response response = new Response();
         Staff staff = staffService.addStaff(request);
         response.setCode("00");
-        response.setMessage("Patient saved successfully");
+        response.setMessage("Staff saved successfully");
         response.setData(staff);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -36,8 +37,18 @@ public class StaffController {
         Response response = new Response();
         Staff staff = staffService.updateStaff(id, uuid,request);
         response.setCode("00");
-        response.setMessage("Patient saved successfully");
+        response.setMessage("Staff Updated successfully");
         response.setData(staff);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Response> getStaffs(){
+        Response response = new Response();
+        List<Staff> staff = staffService.getStaffs();
+        response.setCode("00");
+        response.setMessage("Staff Retrieved successfully");
+        response.setData(staff);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

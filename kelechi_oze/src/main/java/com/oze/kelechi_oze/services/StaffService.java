@@ -1,18 +1,20 @@
 package com.oze.kelechi_oze.services;
 
 import com.oze.kelechi_oze.exception.NotFoundException;
+import com.oze.kelechi_oze.helper.Validations;
 import com.oze.kelechi_oze.io.entities.Staff;
 import com.oze.kelechi_oze.io.repositories.StaffRepository;
-import com.oze.kelechi_oze.models.request.PatientRequestModel;
 import com.oze.kelechi_oze.models.request.StaffRequestModel;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class StaffService {
 
     @Autowired
@@ -20,6 +22,9 @@ public class StaffService {
 
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private Validations validations;
 
     public Staff addStaff(StaffRequestModel request){
         Staff staff = new Staff();
@@ -29,9 +34,7 @@ public class StaffService {
     }
 
     public Staff updateStaff(Long id, UUID uuid, StaffRequestModel request){
-        Boolean exists = repository.existsByUuid(uuid);
-        if(!exists)
-            throw new NotFoundException("404", " Staff with UUID, "+ uuid +" not found");
+        validations.validateUUID(uuid);
 
         Staff updateStaff = repository.findById(id).orElseThrow(() -> new NotFoundException("404", "Staff with requested Id not found"));
 
@@ -40,4 +43,8 @@ public class StaffService {
         return repository.save(updateStaff);
     }
 
+    public List<Staff> getStaffs() {
+        log.info("Total staffs, {}", repository.count());
+        return repository.getAll();
+    }
 }
