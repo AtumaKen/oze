@@ -16,5 +16,5 @@ public interface PatientRepository extends PagingAndSortingRepository<Patient, L
     @Query("Select p from Patient p where p.age > 2")
     Page<Patient> findOlderThan2(Pageable pageable);
 
-    List<Patient> findByLastVisitBetween(Date startDate, Date endDate);
+    List<Patient> deleteByLastVisitBetween(Date startDate, Date endDate);
 }

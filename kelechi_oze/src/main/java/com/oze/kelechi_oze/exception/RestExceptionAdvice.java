@@ -1,7 +1,10 @@
 package com.oze.kelechi_oze.exception;
 
+import com.oze.kelechi_oze.Utility.LoggerUtil;
 import com.oze.kelechi_oze.models.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +19,9 @@ import java.util.Map;
 @RestControllerAdvice
 @Slf4j
 public class RestExceptionAdvice {
+
+    private static final Logger logger = LoggerFactory.getLogger(RestExceptionAdvice.class);
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response handleValidationExceptions(
@@ -62,7 +68,7 @@ public class RestExceptionAdvice {
     public Response handleGeneralExceptions(
             Exception ex) {
 
-        log.error(ex.getMessage());
+        LoggerUtil.logError(logger, ex);
         return Response.builder().code("99").message(ex.getMessage()).build();
     }
 

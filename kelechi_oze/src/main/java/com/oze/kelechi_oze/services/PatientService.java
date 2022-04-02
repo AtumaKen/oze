@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.util.*;
 
@@ -50,25 +51,23 @@ public class PatientService {
         return returnData;
     }
 
+    @Transactional
     public List<Patient> deleteByDateRange(UUID uuid, String startDate, String endDate) {
+        validations.validateUUID(uuid);
         Date start = new Date();
         Date end = new Date();
         if (startDate != null && endDate != null) {
             try {
                  start = Utils.tryParseDate(startDate);
                  end = Utils.tryParseDate(endDate);
-                 if(!start.before(end))
+                 if(start.after(end))
                      throw new BadRequestException(CustomCodes.BAD_REQUEST, "Start date should be before end date");
                 log.info("Dates parsed successfully");
             } catch (ParseException e) {
                 throw new BadRequestException(CustomCodes.BAD_REQUEST, "Expected date format is yyyy-MM-dd HH:mm:ss");
             }
         }
-        List<Patient> byLastVisitBetween = patientRepository.findByLastVisitBetween(start, end);
-        if (!byLastVisitBetween.isEmpty()){
-            patientRepository.deleteAll(byLastVisitBetween);
-        }
-        return byLastVisitBetween;
+        return patientRepository.deleteByLastVisitBetween(start, end);
     }
 
 
