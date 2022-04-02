@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
-public class RestExceptionAdvise {
+public class RestExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Response handleValidationExceptions(
@@ -39,7 +39,16 @@ public class RestExceptionAdvise {
         return Response.builder().code(ex.getCode()).message(ex.getMessage()).build();
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public Response handleBadRequestExceptions(
+            BadRequestException ex) {
+
+
+        return Response.builder().code(ex.getCode()).message(ex.getMessage()).build();
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(CSVException.class)
     public Response handleCSVException(
             CSVException ex) {
@@ -48,7 +57,7 @@ public class RestExceptionAdvise {
         return Response.builder().code(ex.getCode()).message(ex.getMessage()).build();
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public Response handleGeneralExceptions(
             Exception ex) {

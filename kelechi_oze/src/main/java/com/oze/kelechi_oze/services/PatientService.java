@@ -2,22 +2,23 @@ package com.oze.kelechi_oze.services;
 
 import com.oze.kelechi_oze.Utility.CustomCodes;
 import com.oze.kelechi_oze.Utility.Utils;
+import com.oze.kelechi_oze.exception.BadRequestException;
 import com.oze.kelechi_oze.exception.NotFoundException;
 import com.oze.kelechi_oze.helper.CSVHelper;
 import com.oze.kelechi_oze.helper.Validations;
 import com.oze.kelechi_oze.io.entities.Patient;
 import com.oze.kelechi_oze.io.repositories.PatientRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.text.ParseException;
+import java.util.*;
 
 @Service
+@Slf4j
 public class PatientService {
 
     @Autowired
@@ -48,4 +49,27 @@ public class PatientService {
         returnData.put("patient", patient);
         return returnData;
     }
+
+    public List<Patient> deleteByDateRange(UUID uuid, String startDate, String endDate) {
+        Date start = new Date();
+        Date end = new Date();
+        if (startDate != null && endDate != null) {
+            try {
+                 start = Utils.tryParseDate(startDate);
+                 end = Utils.tryParseDate(endDate);
+                 if(!start.before(end))
+                     throw new BadRequestException(CustomCodes.BAD_REQUEST, "Start date should be before end date");
+                log.info("Dates parsed successfully");
+            } catch (ParseException e) {
+                throw new BadRequestException(CustomCodes.BAD_REQUEST, "Expected date format is yyyy-MM-dd HH:mm:ss");
+            }
+        }
+        List<Patient> byLastVisitBetween = patientRepository.findByLastVisitBetween(start, end);
+        if (!byLastVisitBetween.isEmpty()){
+            patientRepository.deleteAll(byLastVisitBetween);
+        }
+        return byLastVisitBetween;
+    }
+
+
 }

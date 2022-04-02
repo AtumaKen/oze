@@ -19,7 +19,9 @@ import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -64,11 +66,17 @@ public class PatientController {
                 .body(file);
     }
 
-    @DeleteMapping("/UUID")
-    public String deleteByDateRange(@PathVariable(name = "UUID") UUID uuid,
-                                    @RequestParam(name = "startDate")Date startDate,
-                                    @RequestParam(name = "endDate") Date endDate){
-        return "Deleted";
+    @DeleteMapping("/{UUID}")
+    public ResponseEntity<Response> deleteByDateRange(@PathVariable(name = "UUID") UUID uuid,
+                                    @RequestParam(name = "startDate")String startDate,
+                                    @RequestParam(name = "endDate")String endDate){
+        Response response = new Response();
+        List<Patient> patients = service.deleteByDateRange(uuid, startDate, endDate);
+        response.setCode("00");
+        String message = patients.isEmpty() ? "Data set empty for provided date range": "Data deleted successfully" ;
+        response.setMessage(message);
+        response.setData(patients);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
